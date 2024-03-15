@@ -1,6 +1,6 @@
 ---
-title: "Project proposal"
-author: "Team name"
+title: "Analysis"
+author: ""
 output: github_document
 ---
 
