@@ -39,7 +39,9 @@ glimpse(Internships)
 General analysis of data
 
 ```{r years-spread}
-ggplot(Internships_Year, aes(x = Year)) +
+Internships |>
+  filter(Year %in% 1973:2023) |>
+ggplot(aes(x = Year)) +
   geom_histogram()
 ```
 
@@ -48,8 +50,8 @@ ggplot(Internships_Year, aes(x = Year)) +
 
 ```{r prepare-leaflet}
 
-labels <- sprintf("<strong>%s</strong><br/> %s", 
-                  Internships$`Internship Site`, Internships$Location) |>
+labels <- sprintf("<strong>%s</strong><br/> %s<br/> %s", 
+                  Internships$`Internship Site`, Internships$Location, Internships$Year) |>
   lapply(htmltools::HTML)
 ```
 
