@@ -7,6 +7,14 @@ output: github_document
 ```{r load-packages, message = FALSE}
 library(tidyverse)
 library(broom)
+library(readxl)
+#install.packages("dplyr")
+library(dplyr)
+library(ggplot2)
+#install.packages("leaflet")
+library(leaflet)
+#install.packages("htmltools")
+library(htmltools)
 ```
 
 ## 1. Introduction
@@ -15,9 +23,41 @@ library(broom)
 
 ## 2. Data
 
+```{r read-data}
+Internships <- read_excel("/cloud/project/data/Internship_Program_Edit.xlsx", 
+    col_types = c("text", "text", "numeric", 
+        "text", "text", "text", "numeric", 
+        "numeric", "text", "text"))
+
+head(Internships)
+glimpse(Internships)
+```
 
 
 ## 3. Data analysis plan
 
+General analysis of data
 
+```{r years-spread}
+ggplot(Internships_Year, aes(x = Year)) +
+  geom_histogram()
+```
+
+
+# Leaflet
+
+```{r prepare-leaflet}
+
+labels <- sprintf("<strong>%s</strong><br/> %s", 
+                  Internships$`Internship Site`, Internships$Location) |>
+  lapply(htmltools::HTML)
+```
+
+
+``` {r leaflet}
+leaflet() %>%
+  addTiles() %>%
+  addMarkers(data = Internships,
+              label = labels) 
+```
 
