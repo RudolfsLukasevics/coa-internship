@@ -18,7 +18,7 @@ Internships_shiny <- Internships_shiny %>%
 
 #UserInterface
 ui = fluidPage(
-  titlePanel("Mapping Past Internships"),
+  titlePanel("Past Internships"),
   
   sidebarLayout(
     sidebarPanel = sidebarPanel(
@@ -33,20 +33,33 @@ ui = fluidPage(
 #Server
 server = function(input, output){
   map_df = reactive({
-    Internships_shiny %>%
+    filtered_years <- Internships_shiny %>%
       filter(Year >= input$Year[1] & Year <= input$Year[2]) %>%
       filter(!is.na(Longitude) & !is.na(Latitude)) %>%
-      st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326)
+      st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326) %>%
+      st_jitter(factor = 0.00001)
+    
+    labels <- lapply(1:nrow(filtered_years), function(i) {
+      label <- sprintf("<strong>%s</strong><br/> %s<br/> %s",
+                       filtered_years$`Internship Site`[i], 
+                       filtered_years$Location[i], filtered_years$Year[i]) %>%
+        htmltools::HTML()
+      return(label)
+    })
+    
+    list(data = filtered_years, labels = labels)
   })
-
+  
   output$map = renderLeaflet({
     
     leaflet() %>%
       addTiles() %>%
-      setView(lng = -18.8, lat = 21.3, zoom = 1.2) %>%
-      addMarkers(data = map_df())
-    })
-  }
-
+      setView(lng = -68.7, lat = 44.8, zoom = 5) %>%
+      addCircleMarkers(data = map_df()$data, 
+                       label = map_df()$labels,  
+                       stroke = FALSE, 
+                       fillOpacity = 0.5)
+  })
+}
 
 shinyApp(ui, server)
