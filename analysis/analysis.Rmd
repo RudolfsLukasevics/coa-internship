@@ -24,7 +24,7 @@ library(htmltools)
 ## 2. Data
 
 ```{r read-data}
-Internships <- read_excel("/cloud/project/data/Internship_Program_Edit.xlsx", 
+Internships <- read_excel("/cloud/project/data/Internship_Program.xlsx", 
     col_types = c("text", "text", "numeric", 
         "text", "text", "text", "numeric", 
         "numeric", "text", "text"))
