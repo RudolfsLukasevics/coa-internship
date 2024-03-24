@@ -14,7 +14,10 @@ Internships_shiny <- read_excel("/cloud/project/internships_app/Internship_Progr
                                            "text", "text", "text", "numeric", 
                                            "numeric", "text", "text"), na = c("NA", ""))
 Internships_shiny <- Internships_shiny %>%
-  filter(Year %in% 1973:2023)
+  filter(is.na(Year) == FALSE, Year != "NA") %>%
+  separate_longer_delim(Year, delim = ", ")
+  #filter(Year %in% 1973:2023)
+
 
 #UserInterface
 ui = fluidPage(
@@ -40,9 +43,11 @@ server = function(input, output){
       st_jitter(factor = 0.00001)
     
     labels <- lapply(1:nrow(filtered_years), function(i) {
-      label <- sprintf("<strong>%s</strong><br/> %s<br/> %s",
-                       filtered_years$`Internship Site`[i], 
-                       filtered_years$Location[i], filtered_years$Year[i]) %>%
+      label <- sprintf("<strong>%s</strong><br/> %s<br/> %s<br/> %s",
+                       filtered_years$`Internship Site`[i],
+                       filtered_years$`Title (if applicable)`[i],
+                       filtered_years$Location[i], 
+                       filtered_years$Year[i]) %>%
         htmltools::HTML()
       return(label)
     })

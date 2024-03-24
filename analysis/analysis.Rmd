@@ -34,16 +34,34 @@ glimpse(Internships)
 ```
 
 
+I think this delim does not work because I already read in the data for Year as numeric. That already took out the ones with multiple years. But if I do not read it in as numeric, I get lots of problems later on, so maybe we should just make the data more suitable? The leaflet would show just one year column anyways, so why not pick the first year given to us before reading in the data. How relevant is it that they stayed at the site for 2-3 years? Most of them are from a long time ago anyways. 
+```{r delim-years}
+#Internships %>%
+  #filter(is.na(Year) == FALSE, Year != "NA") %>%
+  #separate_longer_delim(Year, delim = ", ")
+```
+
+
+
 ## 3. Data analysis plan
 
 General analysis of data
 
 ```{r years-spread}
 Internships |>
-  filter(Year %in% 1973:2023) |>
+  filter(as.numeric(Year) %in% 1973:2023) |>
 ggplot(aes(x = Year)) +
   geom_histogram()
 ```
+
+There are 237 distinct titles for people's internships. The entries should be checked for spelling errors, such as Reaserch instead of Research. They should also be grouped, e.g. farm apprentice, farm assistant, farm hand, farm intern. Make it more explicit when people fill out the internship report to choose from a couple of specific options that e.g. do not contain the type of institution ("Farm"). 
+```{r most-common-titles}
+Internships %>%
+  group_by( `Title (if applicable)`) %>%
+  count() %>%
+  arrange(desc(n))
+```
+
 
 
 # Leaflet
@@ -56,17 +74,10 @@ labels <- sprintf("<strong>%s</strong><br/> %s<br/> %s",
 ```
 
 
-``` {r leaflet}
+``` {r leaflet, eval = FALSE}
 leaflet() %>%
   addTiles() %>%
   addMarkers(data = Internships,
               label = labels) 
-```
-
-```{r}
-
-
-
-
 ```
 
