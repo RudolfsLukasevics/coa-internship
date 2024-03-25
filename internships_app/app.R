@@ -4,35 +4,40 @@ library(shiny)
 library(sf)
 library(leaflet)
 library(readxl)
+library(DT)
 
 #install.packages('rgdal', type = "source", configure.args=c('--with-proj-include=/panfs/roc/msisoft/proj/4.9.3/include','--with-proj-lib=/panfs/roc/msisoft/proj/4.9.3/lib'))
 #install.packages('sf')
 
 
-Internships_shiny <- read_excel("/cloud/project/internships_app/Internship_Program_Edit.xlsx", 
+Internships_shiny <- read_excel("Internship_Program_Edit.xlsx", 
                              col_types = c("text", "text", "numeric", 
                                            "text", "text", "text", "numeric", 
                                            "numeric", "text", "text"), na = c("NA", ""))
 Internships_shiny <- Internships_shiny %>%
   filter(is.na(Year) == FALSE, Year != "NA") %>%
-  separate_longer_delim(Year, delim = ", ")
+  separate_longer_delim(Year, delim = ", ") %>%
+  select(!Name)
   #filter(Year %in% 1973:2023)
 
 
 #UserInterface
 ui = fluidPage(
-  titlePanel("Past Internships"),
-  
+  titlePanel("Past Internships by students at The College of the Atlantic"),
+# Sidebar Panel ----
   sidebarLayout(
     sidebarPanel = sidebarPanel(
-      sliderInput("Year", "Years", min = 1973, max = 2023, value = c(2000, 2023))
+      sliderInput("Year", "Years", min = 1973, max = 2023, value = c(2000, 2023), sep = "")
     ),
+# Main Panel ----
     mainPanel = mainPanel(
-      leafletOutput(outputId = 'map')
+      tabsetPanel(type = "tab",
+      tabPanel("Map", leafletOutput(outputId = 'map')),
+      tabPanel("Table", dataTableOutput(outputId = 'table'))
     )
   )
 )
-
+)
 #Server
 server = function(input, output){
   map_df = reactive({
@@ -63,7 +68,15 @@ server = function(input, output){
       addCircleMarkers(data = map_df()$data, 
                        label = map_df()$labels,  
                        stroke = FALSE, 
-                       fillOpacity = 0.5)
+                       fillOpacity = 0.5,
+                       fillColor = map_df()$Year,
+                       clusterOptions = markerClusterOptions())
+  })
+  
+  output$table = renderDataTable({
+    Internships_shiny %>%
+      filter(Year >= input$Year[1] & Year <= input$Year[2]) %>%
+      DT::datatable()
   })
 }
 
