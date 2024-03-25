@@ -2,12 +2,19 @@
 title: "Analysis"
 author: ""
 output: github_document
+always_allow_html: true
 ---
+
+# Load libraries
+
 ```{r load-packages, message = FALSE}
 library(tidyverse)
 library(googlesheets4)
 library(openxlsx)
+library(DT)
 ```
+
+# Read data
 
 ```{r read-data-from-google-sheets}
 #career_connections_internships <- read_sheet("https://docs.google.com/spreadsheets/d/1_iSvNe37MX_rvaBNmIgu37PffRk5jXE4qdLSiyZ-Q7w/edit#gid=0", sheet = 1,
@@ -15,6 +22,7 @@ library(openxlsx)
 
 #repeat for each sheet
 ```
+
 
 ```{r read-downloaded-data}
 
@@ -27,5 +35,25 @@ CombinedCareerConnections <- data.table::rbindlist(SheetList, fill = TRUE)
 
 CombinedCareerConnections$Opportunity <- rep(sheets, sapply(SheetList, nrow))
 
+```
+
+# Interactive datatable
+
+```{r interactive-datatable}
+
+datatable(CombinedCareerConnections, options = list(
+  searching = TRUE, 
+  pageLength = 5,
+  lengthMenu = c(5, 15, 20, 25),
+  filter = 'top'
+))
+
+```
+
+```{r format-style, eval = FALSE}
+formatStyle(datatable, 
+  'Application.Due', 
+  backgroundColor = styleInterval(values = c('ASAP', 'Rolling basis'), colors = c('red', 'orange'))
+)
 ```
 
