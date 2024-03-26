@@ -29,9 +29,14 @@ ui = fluidPage(
     
     sidebarPanel = sidebarPanel(
   # vector: International Students    
-      checkboxGroupInput("Open.to.Intl..Students", label = h3("International Students"), 
+      checkboxGroupInput("Open_to_Intl._Students", label = h3("International Students"), 
                          choices = list("Yes" = 1, "No" = 2),
                          selected = 1),
+  # vector: Opportunity
+      checkboxGroupInput("Opportunity", label = h3("Type of Opportunity"), 
+                         choices = unique(CombinedCareerConnections_shiny$Opportunity),
+                         selected = unique(CombinedCareerConnections_shiny$Opportunity),
+                         )
     ),
   
 # Main Panel ----    
@@ -47,12 +52,16 @@ server = function(input, output){
   output$data_table = renderDataTable({
     filtered_data <- CombinedCareerConnections_shiny
     
-    # Filter data based on International Students selection
-    if (input$Open.to.Intl..Students == 1) {
-      filtered_data <- subset(filtered_data, `Open.to.Intl..Students` == "Yes" | is.na(`Open.to.Intl..Students`))
-    } else if (input$Open.to.Intl..Students == 2) {
-      filtered_data <- subset(filtered_data, `Open.to.Intl..Students` == "No" | is.na(`Open.to.Intl..Students`))
+    # Filter data based on International Students checkbox
+    if (input$Open_to_Intl._Students == 1) {
+      filtered_data <- subset(filtered_data, `Open_to_Intl._Students` == "Yes" | is.na(`Open_to_Intl._Students`))
+    } else if (input$Open_to_Intl._Students == 2) {
+      filtered_data <- subset(filtered_data, `Open_to_Intl._Students` == "No" | is.na(`Open_to_Intl._Students`))
     }
+    
+    # Filter data based on Opportunity checkbox
+    filtered_data <- CombinedCareerConnections_shiny[
+      CombinedCareerConnections_shiny$Opportunity %in% input$Opportunity, ]
     
     datatable(filtered_data, options = list(
       searching = FALSE, 
@@ -60,8 +69,6 @@ server = function(input, output){
       lengthMenu = c(5, 15, 20, 25)
     ))
   })
-  
-#output$IntlStudents <- renderPrint({ input$Open.to.Intl..Students })
   
 }
 
