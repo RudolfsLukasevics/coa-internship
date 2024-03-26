@@ -41,7 +41,7 @@ CombinedCareerConnections$Opportunity <- rep(sheets, sapply(SheetList, nrow))
 
 ```{r interactive-datatable}
 
-datatable(CombinedCareerConnections, options = list(
+datatable <- datatable(CombinedCareerConnections, options = list(
   searching = TRUE, 
   pageLength = 5,
   lengthMenu = c(5, 15, 20, 25),
@@ -52,8 +52,11 @@ datatable(CombinedCareerConnections, options = list(
 
 ```{r format-style, eval = FALSE}
 formatStyle(datatable, 
-  'Application.Due', 
-  backgroundColor = styleInterval(values = c('ASAP', 'Rolling basis'), colors = c('red', 'orange'))
-)
+  "Application.Due", 
+  backgroundColor = styleEqual(
+    levels = c('ASAP', 'Rolling basis', 'Rolling Basis'), 
+    values = c('red', 'orange', 'orange')
+    )
+  )
 ```
 
