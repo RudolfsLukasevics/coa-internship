@@ -18,21 +18,19 @@ Internships_shiny <- Internships_shiny %>%
 
 #UserInterface
 ui = fluidPage(
-  titlePanel("Past Internships by students at College of the Atlantic"),
-# Sidebar Panel ----
-  sidebarLayout(
-    sidebarPanel = sidebarPanel(
-      sliderInput("Year", "Years", min = 1973, max = 2023, value = c(2000, 2023), sep = "")
-    ),
+  titlePanel("Past Internships by students at
+             College of the Atlantic"),
+
 # Main Panel ----
-    mainPanel = mainPanel(
-      tabsetPanel(type = "tab",
+    mainPanel(
+      sliderInput("Year", "Years", min = 1973, max = 2023, value = c(2000, 2023), sep = ""),
+      
+      tabsetPanel(
       tabPanel("Map", leafletOutput(outputId = 'map')),
-      tabPanel("Table", dataTableOutput(outputId = 'table'))
+      tabPanel("Table", dataTableOutput(outputId = 'table')))
     )
   )
-)
-)
+
 #Server
 server = function(input, output){
   map_df = reactive({
