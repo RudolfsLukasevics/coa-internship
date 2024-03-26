@@ -25,7 +25,7 @@ career_connections <-"/cloud/project/data/Career_Connections_Database.xlsx"
 sheets <- openxlsx::getSheetNames(career_connections)
 SheetList <- lapply(sheets,openxlsx::read.xlsx,xlsxFile=career_connections)
 names(SheetList) <- sheets
-CombinedCareerConnections <- data.table::rbindlist(SheetList, fill = TRUE)
+CombinedCareerConnections <- data.table::rbindlist(SheetList, fill = TRUE, use.names = TRUE)
 
 CombinedCareerConnections$Opportunity <- rep(sheets, sapply(SheetList, nrow))
 ```
