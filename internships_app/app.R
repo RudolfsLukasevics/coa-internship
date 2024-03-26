@@ -1,16 +1,12 @@
 library(tidyverse)
 library(shiny)
-#install.packages("sf")
 library(sf)
 library(leaflet)
 library(readxl)
 library(DT)
 
-#install.packages('rgdal', type = "source", configure.args=c('--with-proj-include=/panfs/roc/msisoft/proj/4.9.3/include','--with-proj-lib=/panfs/roc/msisoft/proj/4.9.3/lib'))
-#install.packages('sf')
 
-
-Internships_shiny <- read_excel("Internship_Program_Edit.xlsx", 
+Internships_shiny <- read_excel("Internship_Program.xlsx", 
                              col_types = c("text", "text", "numeric", 
                                            "text", "text", "text", "numeric", 
                                            "numeric", "text", "text"), na = c("NA", ""))
@@ -18,7 +14,6 @@ Internships_shiny <- Internships_shiny %>%
   filter(is.na(Year) == FALSE, Year != "NA") %>%
   separate_longer_delim(Year, delim = ", ") %>%
   select(!Name)
-  #filter(Year %in% 1973:2023)
 
 
 #UserInterface
