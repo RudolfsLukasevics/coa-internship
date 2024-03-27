@@ -32,6 +32,9 @@ ui = fluidPage(
   # vector: Organization   
       textInput("text_org", label = h3("Organization"), value = ""),
       
+  # vector: Position(s)
+      textInput("text_pos", label = h3("Position/Title"), value = ""),
+      
   # vector: Pay - Unpaid Career Connections
       radioButtons("exclude_unpaid", label = h3("Unpaid Career Connections"),
                    choices = c("Exclude", "Include"),
@@ -64,11 +67,19 @@ server = function(input, output){
     filtered_data <- CombinedCareerConnections_shiny
     
     # Filter data based on Organization Text Input
-    search_terms <- strsplit(input$text_org, "\\s+")[[1]]
+    search_terms_org <- strsplit(input$text_org, "\\s+")[[1]]
     
     filtered_data <- filter(filtered_data, 
-                            grepl(paste(search_terms, collapse = "|"), 
+                            grepl(paste(search_terms_org, collapse = "|"), 
                                   tolower(Organization), 
+                                  ignore.case = TRUE))
+    
+    # Filter data based on Position(s) Text Input
+    search_terms_pos <- strsplit(input$text_pos, "\\s+")[[1]]
+    
+    filtered_data <- filter(filtered_data, 
+                            grepl(paste(search_terms_pos, collapse = "|"), 
+                                  tolower(`Position(s)`), 
                                   ignore.case = TRUE))
     
     # Filter data based on Unpaid radioButton
