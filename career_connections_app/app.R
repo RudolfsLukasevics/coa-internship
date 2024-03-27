@@ -14,7 +14,9 @@ SheetList <- lapply(sheets, openxlsx::read.xlsx, xlsxFile=career_connections)
 
 names(SheetList) <- sheets
 
-CombinedCareerConnections_shiny <- data.table::rbindlist(SheetList, fill = TRUE, idcol = "SheetName")
+CombinedCareerConnections_shiny <- data.table::rbindlist(SheetList, 
+                                                         fill = TRUE, 
+                                                         idcol = "SheetName")
 
     # create vector/column that takes the names of the sheets and applies them to each row of that original sheet
 CombinedCareerConnections_shiny$Opportunity <- rep(sheets, sapply(SheetList, nrow))

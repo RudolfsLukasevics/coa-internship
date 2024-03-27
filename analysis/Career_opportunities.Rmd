@@ -26,7 +26,7 @@ library(DT)
 
 ```{r read-downloaded-data}
 
-career_connections <-"/cloud/project/data/Career_Connections_Database.xlsx"
+career_connections <- "/cloud/project/data/Career_Connections_Database.xlsx"
 
 sheets <- openxlsx::getSheetNames(career_connections)
 SheetList <- lapply(sheets,openxlsx::read.xlsx,xlsxFile=career_connections)
@@ -34,6 +34,11 @@ names(SheetList) <- sheets
 CombinedCareerConnections <- data.table::rbindlist(SheetList, fill = TRUE, use.names = TRUE)
 
 CombinedCareerConnections$Opportunity <- rep(sheets, sapply(SheetList, nrow))
+
+
+#doesn't work --- tried to turn cells with text as.character and cells with dates as.Date
+#CombinedCareerConnections <- CombinedCareerConnections %>%
+ # mutate(Application_Due = case_when(grepl("\\s", Application_Due) | grepl("/", Application_Due) ~ as.character(Application_Due), TRUE ~ as.Date(Application_Due, format = "%b %d", tryFormats = c("%b %d", "%b %Y"))))
 
 ```
 
