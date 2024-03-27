@@ -28,16 +28,21 @@ ui = fluidPage(
   sidebarLayout(
     
     sidebarPanel = sidebarPanel(
-  # vector: Unpaid internships/jobs
-      radioButtons("exclude_unpaid", label = h3("Unpaid internships"),
+      
+  # vector: Organization   
+      textInput("text_org", label = h3("Organization"), value = ""),
+      
+  # vector: Pay - Unpaid Career Connections
+      radioButtons("exclude_unpaid", label = h3("Unpaid Career Connections"),
                    choices = c("Exclude", "Include"),
                    selected = "Include"
                 ),
       
   # vector: International Students    
-      checkboxGroupInput("Open_to_Intl._Students", label = h3("International Students"), 
-                         choices = list("Yes" = 1, "No" = 2),
-                         selected = 1),
+      radioButtons("Open_to_Intl._Students", label = h3("Are you an international student?"), 
+                     choices = c("Yes", "No"),
+                     selected = "Yes"),
+  
   # vector: Opportunity
       checkboxGroupInput("OpportunityType", label = h3("Type of Opportunity"), 
                          choices = unique(CombinedCareerConnections_shiny$Opportunity),
@@ -58,17 +63,25 @@ server = function(input, output){
   output$data_table = renderDataTable({
     filtered_data <- CombinedCareerConnections_shiny
     
+    # Filter data based on Organization Text Input
+    search_terms <- strsplit(input$text_org, "\\s+")[[1]]
+    
+    filtered_data <- filter(filtered_data, 
+                            grepl(paste(search_terms, collapse = "|"), 
+                                  tolower(Organization), 
+                                  ignore.case = TRUE))
+    
     # Filter data based on Unpaid radioButton
     if (input$exclude_unpaid == "Exclude") { 
-      filtered_data <- subset(filtered_data, trimws(Pay) != "Unpaid")} 
+      filtered_data <- subset(filtered_data != "Unpaid")} 
     else if (input$exclude_unpaid == "Include") { }
     
     # Filter data based on International Students checkbox
-    if (input$Open_to_Intl._Students == 1) {
+    if (input$Open_to_Intl._Students == "Yes") {
       filtered_data <- subset(filtered_data, 
                               `Open_to_Intl._Students` == "Yes" | 
                                 is.na(`Open_to_Intl._Students`))
-    } else if (input$Open_to_Intl._Students == 2) {
+    } else if (input$Open_to_Intl._Students == "No") {
       filtered_data <- subset(filtered_data, 
                               `Open_to_Intl._Students` == "No" | 
                                 is.na(`Open_to_Intl._Students`))
