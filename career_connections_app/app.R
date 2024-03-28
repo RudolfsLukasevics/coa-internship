@@ -20,9 +20,17 @@ CombinedCareerConnections_shiny <- data.table::rbindlist(SheetList,
                                                          fill = TRUE, 
                                                          idcol = "SheetName")
 
-    # create vector/column that takes the names of the sheets and applies them to each row of that original sheet
+# create column that takes the names of the sheets and applies them to each row of that original sheet
 CombinedCareerConnections_shiny$Opportunity <- rep(sheets, sapply(SheetList, nrow))
 
+# create a column that turns characters in Application_Due column into dates
+CombinedCareerConnections_shiny <- CombinedCareerConnections_shiny %>%
+  mutate(Deadline = case_when(
+  !is.na(as.numeric(Application_Due)) ~ as.Date(as.numeric(Application_Due), origin = "1899-12-30"),
+  Application_Due %in% c("Rolling Basis", "ASAP") ~ Sys.Date() + 1, #today + one day
+  Application_Due %in% c("Contact for info", "Unknown") ~ Sys.Date(), # today
+  TRUE ~ as.Date(Application_Due, format = "%b %d")
+))
 
 # User Interface
 ui = fluidPage(
@@ -106,13 +114,16 @@ server = function(input, output){
     filtered_data <- filtered_data[
       filtered_data$Opportunity %in% input$OpportunityType, ]
     
+    # Automatic ordering based on Deadline dates
+    filtered_data <- filtered_data[order(filtered_data$Deadline), ]
+    
     # Datatable basis
     datatable(filtered_data, options = list(
       searching = FALSE, 
       pageLength = 5,
       lengthMenu = c(5, 15, 20, 25), 
       columnDefs = list(
-        list(visible = FALSE, targets = c(1)))
+        list(visible = FALSE, targets = c(1, 7)))
     ))
   })
 }

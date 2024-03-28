@@ -52,6 +52,8 @@ datatable <- datatable(CombinedCareerConnections, options = list(
 
 ## Application Due Date
 This is a tricky column to work with because it contains characters and dates. The goal is to create a code to order the career opportunities automatically according to their application deadline. 
+//Note: It is very important that Jeffry always enters dates in the MMM T format (which is what they have mostly been using so far, it's custom-defined, not a standard date format) and also only uses these four options to communicate other information "ASAP", "Rolling Basis", "Unknown", "Contact for info". Any additional information should be in the Notes column.
+
 Laurie considered this as a potential approach: turning the text into dates
 
 ```{r application-due-as-date}
