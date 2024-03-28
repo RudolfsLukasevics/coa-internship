@@ -67,9 +67,11 @@ server = function(input, output){
   })
   
   output$table = renderDataTable({
-    Internships_shiny %>%
-      filter(Year >= input$Year[1] & Year <= input$Year[2]) %>%
-      DT::datatable()
+    DT::datatable(Internships_shiny %>%
+      filter(Year >= input$Year[1] & Year <= input$Year[2]), 
+      options = list(columnDefs = list(
+          list(visible = FALSE, targets = c(6, 7, 8, 9))))
+      )
   })
 }
 
