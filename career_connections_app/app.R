@@ -5,6 +5,8 @@ library(DT)
 
 
 # Read data
+  # should be changed to reading data from Jeffry's Google Sheets directly 
+  # using the package 'googlesheets4' (see /analysis/Career_opportunities.Rmd)
 career_connections <-"/cloud/project/data/Career_Connections_Database.xlsx"
 
 # Combine data sheets
@@ -89,7 +91,7 @@ server = function(input, output){
       filtered_data <- subset(filtered_data != "Unpaid")} 
     else if (input$exclude_unpaid == "Include") { }
     
-    # Filter data based on International Students checkbox
+    # Filter data based on International Students radioButtons
     if (input$Open_to_Intl._Students == "Yes") {
       filtered_data <- subset(filtered_data, 
                               `Open_to_Intl._Students` == "Yes" | 
@@ -108,7 +110,9 @@ server = function(input, output){
     datatable(filtered_data, options = list(
       searching = FALSE, 
       pageLength = 5,
-      lengthMenu = c(5, 15, 20, 25)
+      lengthMenu = c(5, 15, 20, 25), 
+      columnDefs = list(
+        list(visible = FALSE, targets = c(1)))
     ))
   })
 }

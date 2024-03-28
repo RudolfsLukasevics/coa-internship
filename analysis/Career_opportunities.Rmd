@@ -17,8 +17,9 @@ library(DT)
 # Read data
 
 ```{r read-data-from-google-sheets}
-#career_connections_internships <- read_sheet("https://docs.google.com/spreadsheets/d/1_iSvNe37MX_rvaBNmIgu37PffRk5jXE4qdLSiyZ-Q7w/edit#gid=0", sheet = 1,
-           #gs4_deauth())
+#career_connections_internships <- read_sheet("https://docs.google.com/spreadsheets/d/1_iSvNe37MX_rvaBNmIgu37PffRk5jXE4qdLSiyZ-Q7w/edit#gid=0", 
+          # sheet = 1,    # defines from which sheet the data should be taken
+           #gs4_deauth()) 
 
 #repeat for each sheet
 ```
@@ -34,12 +35,6 @@ names(SheetList) <- sheets
 CombinedCareerConnections <- data.table::rbindlist(SheetList, fill = TRUE, use.names = TRUE)
 
 CombinedCareerConnections$Opportunity <- rep(sheets, sapply(SheetList, nrow))
-
-
-#doesn't work --- tried to turn cells with text as.character and cells with dates as.Date
-#CombinedCareerConnections <- CombinedCareerConnections %>%
- # mutate(Application_Due = case_when(grepl("\\s", Application_Due) | grepl("/", Application_Due) ~ as.character(Application_Due), TRUE ~ as.Date(Application_Due, format = "%b %d", tryFormats = c("%b %d", "%b %Y"))))
-
 ```
 
 # Interactive datatable
@@ -54,6 +49,23 @@ datatable <- datatable(CombinedCareerConnections, options = list(
 ))
 
 ```
+
+## Application Due Date
+This is a tricky column to work with because it contains characters and dates. The goal is to create a code to order the career opportunities automatically according to their application deadline. 
+Laurie considered this as a potential approach: turning the text into dates
+
+```{r application-due-as-date}
+CCCDeadline <- CombinedCareerConnections
+
+CCCDeadline <- CCCDeadline %>%
+  mutate(Deadline = case_when(
+    !is.na(as.numeric(Application_Due)) ~ as.Date(as.numeric(Application_Due), origin = "1899-12-30"),
+    Application_Due %in% c("Rolling Basis", "ASAP") ~ Sys.Date() + 1, #today + one day
+    Application_Due %in% c("Contact for info", "Unknown") ~ Sys.Date(), # today
+    TRUE ~ as.Date(Application_Due, format = "%b %d")
+  ))
+```
+
 
 ```{r format-style, eval = FALSE}
 formatStyle(datatable, 
