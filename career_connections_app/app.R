@@ -20,17 +20,21 @@ CombinedCareerConnections_shiny <- data.table::rbindlist(SheetList,
                                                          fill = TRUE, 
                                                          idcol = "SheetName")
 
-# create column that takes the names of the sheets and applies them to each row of that original sheet
+## create column that takes the names of the sheets and applies them to each row of that original sheet
 CombinedCareerConnections_shiny$Opportunity <- rep(sheets, sapply(SheetList, nrow))
 
-# create a column that turns characters in Application_Due column into dates
+## create a column that turns characters in Application_Due column into dates
 CombinedCareerConnections_shiny <- CombinedCareerConnections_shiny %>%
   mutate(Deadline = case_when(
-  !is.na(as.numeric(Application_Due)) ~ as.Date(as.numeric(Application_Due), origin = "1899-12-30"),
-  Application_Due %in% c("Rolling Basis", "ASAP") ~ Sys.Date() + 1, #today + one day
-  Application_Due %in% c("Contact for info", "Unknown") ~ Sys.Date(), # today
-  TRUE ~ as.Date(Application_Due, format = "%b %d")
-))
+    !is.na(as.numeric(Application_Due)) ~ as.Date(as.numeric(Application_Due), origin = "1899-12-30"),
+    Application_Due %in% c("Rolling Basis", "ASAP") ~ Sys.Date(), #today
+    TRUE ~ as.Date(Application_Due, format = "%b %d")
+  )) %>%
+  mutate(Deadline = case_when(
+    Application_Due %in% c("Contact for info", "Unknown") ~ 
+      max(Deadline, na.rm = TRUE) + 1, # maximum date in dataset plus one day
+    TRUE ~ Deadline
+  ))
 
 # User Interface
 ui = fluidPage(

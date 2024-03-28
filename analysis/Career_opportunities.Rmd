@@ -62,9 +62,12 @@ CCCDeadline <- CombinedCareerConnections
 CCCDeadline <- CCCDeadline %>%
   mutate(Deadline = case_when(
     !is.na(as.numeric(Application_Due)) ~ as.Date(as.numeric(Application_Due), origin = "1899-12-30"),
-    Application_Due %in% c("Rolling Basis", "ASAP") ~ Sys.Date() + 1, #today + one day
-    Application_Due %in% c("Contact for info", "Unknown") ~ Sys.Date(), # today
+    Application_Due %in% c("Rolling Basis", "ASAP") ~ Sys.Date(), #today
     TRUE ~ as.Date(Application_Due, format = "%b %d")
+  )) %>%
+  mutate(Deadline = case_when(
+    Application_Due %in% c("Contact for info", "Unknown") ~ max(Deadline, na.rm = TRUE) + 1,
+    TRUE ~ Deadline
   ))
 ```
 
