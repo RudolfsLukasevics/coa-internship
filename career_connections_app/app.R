@@ -127,8 +127,12 @@ server = function(input, output){
       pageLength = 5,
       lengthMenu = c(5, 15, 20, 25), 
       columnDefs = list(
-        list(visible = FALSE, targets = c(1, 7)))
-    ))
+        list(visible = FALSE, targets = c(1, 7)), 
+ #the following line of code does not work but it is the column order I propose
+        list(targets = c(11, 2, 3, 5, 8, 12, 10, 6, 9)) 
+        )
+      )
+    )
   })
 }
 
