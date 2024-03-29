@@ -1,0 +1,13 @@
+name: career_connections_app
+title: career_connections_app
+username:
+account: laurie-the-student-baker
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 11619282
+bundleId: 8433039
+url: https://laurie-the-student-baker.shinyapps.io/career_connections_app/
+when: 1711728232.94986
+lastSyncTime: 1711728232.94987
+asMultiple: FALSE
+asStatic: FALSE
