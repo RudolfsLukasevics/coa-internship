@@ -23,7 +23,7 @@ ui = fluidPage(
 
 # Main Panel ----
     mainPanel(
-      sliderInput("Year", "Years", min = 1973, max = 2023, value = c(2000, 2023), sep = ""),
+      sliderInput("Year", "Years", min = 1973, max = 2025, value = c(2000, 2024), sep = ""),
       
       tabsetPanel(
       tabPanel("Map", leafletOutput(outputId = 'map')),
