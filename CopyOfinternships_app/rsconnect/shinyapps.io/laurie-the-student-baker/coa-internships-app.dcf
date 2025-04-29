@@ -1,0 +1,13 @@
+name: coa-internships-app
+title: coa-internships-app
+username:
+account: laurie-the-student-baker
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 11584451
+bundleId: 8416494
+url: https://laurie-the-student-baker.shinyapps.io/coa-internships-app/
+when: 1711393783.2593
+lastSyncTime: 1711393783.25932
+asMultiple: FALSE
+asStatic: FALSE
