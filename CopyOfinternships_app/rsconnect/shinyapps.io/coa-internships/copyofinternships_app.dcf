@@ -1,0 +1,10 @@
+name: copyofinternships_app
+title:
+username: coa-internships
+account: coa-internships
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 14745442
+bundleId: 10276133
+url: https://coa-internships.shinyapps.io/copyofinternships_app/
+version: 1
