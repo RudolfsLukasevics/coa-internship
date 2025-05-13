@@ -20,8 +20,7 @@ Internships_shiny <- Internships_shiny %>%
 
 #UserInterface
 ui = fluidPage(
-  titlePanel("Past Internships by students at
-             College of the Atlantic"),
+  titlePanel("COA Past Internships Database"),
 
 # Main Panel ----
     mainPanel(
